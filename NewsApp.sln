@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsApp", "NewsApp\NewsApp.csproj", "{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}.Release|iPhone.ActiveCfg = Release|iPhone
+		{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}.Release|iPhone.Build.0 = Release|iPhone
+		{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{841A5307-E35F-4D44-A7F4-9FE9F0C8D8BA}.Debug|iPhone.Build.0 = Debug|iPhone
+	EndGlobalSection
+EndGlobal
