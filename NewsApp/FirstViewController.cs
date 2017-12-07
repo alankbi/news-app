@@ -24,14 +24,15 @@ namespace NewsApp
         {
             Console.WriteLine("Test");
 
-            ArticleFetcher fetcher = new ArticleFetcher();
-            List<NewsArticle> articles = fetcher.GetArticles();
+            var fetcher = new ArticleFetcher();
+            var articles = fetcher.GetArticles();
 
-			foreach (NewsArticle article in articles)
-			{
-				Console.WriteLine(article.title);
-				Console.WriteLine(article.source.name);
-			}
+            foreach (NewsArticle a in articles)
+            {
+                Console.WriteLine(a.Title + "\n" + a.Description);
+            }
+
+            DocumentClusterer d = new DocumentClusterer(articles);
         }
 
 

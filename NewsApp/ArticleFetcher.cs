@@ -13,10 +13,10 @@ namespace NewsApp
     {
         private string apiKey = "7f89b3f5d0ee4aa0aada683a0e2757a8";
 
-        private List<NewsArticle> articles;
+        private List<NewsSource> newsSources;
 
         private const int MaxSourcesPerCall = 5;
-        private const int NumberOfCalls = 4;
+        private const int NumberOfCalls = 1;
 
         /**
          * Creates a new instance of the class with a list of news articles,
@@ -25,31 +25,7 @@ namespace NewsApp
          */
         public ArticleFetcher()
         {
-			articles = new List<NewsArticle>();
-
-			NewsSource[] sources = FetchAllSources();
-
-            string[] sourceIds = new string[sources.Length];
-            for (int i = 0; i < sources.Length; i++)
-            {
-                sourceIds[i] = sources[i].id;
-            }
-
-            // Randomize sources to pull articles from
-			Random r = new Random();
-            sourceIds = sourceIds.OrderBy(x => r.Next()).ToArray();
-
-            // How many sources to use
-            int totalSources = Math.Min(sourceIds.Length, MaxSourcesPerCall * NumberOfCalls);
-
-            for (int i = 0; i < totalSources; i += MaxSourcesPerCall)
-			{
-                // Get the next MaxSourcesPerCall sources or however many are remaining
-                int sourcesPerCall = Math.Min(MaxSourcesPerCall, sourceIds.Length - i);
-
-				string sourcesAsString = String.Join(",", sourceIds, i, sourcesPerCall);
-				articles.AddRange(FetchArticles(sourcesAsString));
-			}
+            newsSources = FetchAllSources(); // TODO: sources passed through constructor
         }
 
         /**
@@ -57,7 +33,31 @@ namespace NewsApp
          */
         public List<NewsArticle> GetArticles()
         {
-            return articles;
+            var newsArticles = new List<NewsArticle>();
+			var sourceIds = new string[newsSources.Count];
+
+			for (int i = 0; i < newsSources.Count; i++)
+			{
+				sourceIds[i] = newsSources[i].id;
+			}
+
+			// Randomize sources to pull articles from
+			var r = new Random();
+			sourceIds = sourceIds.OrderBy(x => r.Next()).ToArray();
+
+			// How many sources to use
+			int totalSources = Math.Min(sourceIds.Length, MaxSourcesPerCall * NumberOfCalls);
+
+			for (int i = 0; i < totalSources; i += MaxSourcesPerCall)
+			{
+				// Get the next MaxSourcesPerCall sources or however many are remaining
+				int sourcesPerCall = Math.Min(MaxSourcesPerCall, sourceIds.Length - i);
+
+				string sourcesAsString = String.Join(",", sourceIds, i, sourcesPerCall);
+				newsArticles.AddRange(FetchArticles(sourcesAsString));
+			}
+
+            return newsArticles;
         }
 
         /**
@@ -72,23 +72,21 @@ namespace NewsApp
 
             dynamic response = JObject.Parse(json);
 
-            List<NewsArticle> articles = response.articles.ToObject<List<NewsArticle>>();
-
-            return articles;
+            return response.articles.ToObject<List<NewsArticle>>();
         }
 
         /**
          * Returns all of the english sources from NewsAPI. Eventually this will be
          * cached in a database. 
          */
-        private NewsSource[] FetchAllSources() 
+        private List<NewsSource> FetchAllSources() 
         {
 			string url = "https://newsapi.org/v2/sources?language=en&apiKey=" + apiKey;
 			string json = ExecuteCall(url);
 
 			dynamic response = JObject.Parse(json);
 
-            return response.sources.ToObject<NewsSource[]>();
+            return response.sources.ToObject<List<NewsSource>>();
         }
 
         /**

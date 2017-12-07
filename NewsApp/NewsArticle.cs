@@ -3,15 +3,16 @@ namespace NewsApp
 {
     public class NewsArticle
     {
-        public string title { get; set; }
-        public string description { get; set; }
-        public string url { get; set; }
-        public string urlToImage { get; set; }
-        public NewsSource source { get; set; }
+
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Url { get; set; }
+        public string UrlToImage { get; set; }
+        public NewsSource Source { get; set; }
 
 		public override int GetHashCode()
 		{
-			return url.GetHashCode();
+			return Url.GetHashCode();
 		}
     }
 }
