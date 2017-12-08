@@ -15,7 +15,7 @@ namespace NewsApp
             analyzer = new DocumentAnalyzer(articles);
         }
 
-        public void cluster()
+        public void cluster(int k)
         {
             // TODO: cluster articles using k-means based on tf-idf of documents. 
         }

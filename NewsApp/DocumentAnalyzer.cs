@@ -5,10 +5,17 @@ namespace NewsApp
 {
     public class DocumentAnalyzer
     {
-        // Consider creating a class for this to store not only the dictionary
-        // but also an int value for total # of words in each document
+        // Keep track of word frequencies in each article
         List<Dictionary<string, int>> articleText;
+        List<int> articleLength;
+
+        // Keep track of word frequencies in the corpus
         Dictionary<string, int> docFrequency;
+        List<string> docTerms;
+
+        // Matrix of tf-idf scores where [i, j] represents the tf-idf value for
+        // the jth term in the ith document. 
+        double[,] scoreMatrix;
 
         /**
          * Creates an instance with a List holding the arrays of words for
@@ -18,7 +25,9 @@ namespace NewsApp
         public DocumentAnalyzer(List<NewsArticle> articles)
         {
             articleText = new List<Dictionary<string, int>>();
+            articleLength = new List<int>();
             docFrequency = new Dictionary<string, int>();
+            docTerms = new List<string>();
 
             foreach (NewsArticle article in articles) 
             {
@@ -41,6 +50,7 @@ namespace NewsApp
                     }
                 }
                 articleText.Add(uniqueWords);
+                articleLength.Add(words.Length);
 
                 // Add frequency of words across all documents 
                 foreach (string word in uniqueWords.Keys)
@@ -52,18 +62,64 @@ namespace NewsApp
                     else
                     {
                         docFrequency[word] = 1;
+                        docTerms.Add(word);
                     }
                 }
             }
 
-            // TESTING
+            scoreMatrix = new double[articles.Count, docFrequency.Count];
 
-            foreach (KeyValuePair<string, int> pair in docFrequency)
+            ConstructMatrix();
+        }
+
+        public double similarity(int firstDoc, int secondDoc)
+        {
+            // TODO: return cosine similarity between the two given documents. 
+            return 0;
+        }
+
+        /**
+         * Constructs the tf-idf matrix for the given documents and terms found.
+         */
+        private void ConstructMatrix()
+        {
+            // Inverted traversal to allow saving of idf calculation
+            for (int j = 0; j < scoreMatrix.GetLength(1); j++) 
             {
-                Console.WriteLine(pair.Key + " " + pair.Value);
+                string word = docTerms[j];
+                double idf = IdfValue(word);
+                for (int i = 0; i < scoreMatrix.GetLength(0); i++) 
+                {
+                    double tf = tfValue(word, i);
+                    scoreMatrix[i, j] = tf * idf;
+                }
             }
         }
 
+        /**
+        * Returns the tf value for the term in the given document. 
+        */
+        private double tfValue(string word, int docNumber)
+        {
+            var frequencies = articleText[docNumber];
+            if (frequencies.ContainsKey(word))
+            {
+                return (double)frequencies[word] / articleLength[docNumber];
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        /**
+         * Returns the idf value for the term. 
+         */
+        private double IdfValue(string term)
+        {
+            int freq = docFrequency[term];
+            return Math.Log((double)docTerms.Count / freq);
+        }
 
         /**
          * Takes an array of words and modifies them to later use for analysis. 
@@ -85,6 +141,23 @@ namespace NewsApp
                 {
                     words[i] = words[i].Substring(0, words[i].Length - 3);
                 }
+            }
+        }
+
+        private void DebugMatrix()
+        {
+            foreach (KeyValuePair<string, int> pair in docFrequency)
+            {
+                Console.WriteLine(pair.Key + " " + pair.Value);
+            }
+
+            for (int i = 0; i < scoreMatrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < scoreMatrix.GetLength(1); j++)
+                {
+                    Console.Write(scoreMatrix[i, j] + " ");
+                }
+                Console.WriteLine();
             }
         }
     }
