@@ -16,7 +16,7 @@ namespace NewsApp
         private List<NewsSource> newsSources;
 
         private const int MaxSourcesPerCall = 5;
-        private const int NumberOfCalls = 1;
+        private const int NumberOfCalls = 4;
 
         /**
          * Creates a new instance of the class with a list of news articles,

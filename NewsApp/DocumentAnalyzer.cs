@@ -72,10 +72,21 @@ namespace NewsApp
             ConstructMatrix();
         }
 
-        public double similarity(int firstDoc, int secondDoc)
+        public double similarity(int docA, int docB)
         {
-            // TODO: return cosine similarity between the two given documents. 
-            return 0;
+            double dotProduct, magnitudeA, magnitudeB;
+            dotProduct = magnitudeA = magnitudeB = 0;
+
+            for (int j = 0; j < scoreMatrix.GetLength(1); j++)
+            {
+                double a = scoreMatrix[docA, j];
+                double b = scoreMatrix[docB, j];
+
+                dotProduct += a * b;
+                magnitudeA += a * a;
+                magnitudeB += b * b;
+            }
+            return dotProduct / (Math.Sqrt(magnitudeA) * Math.Sqrt(magnitudeB));
         }
 
         /**
