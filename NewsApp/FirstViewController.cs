@@ -31,9 +31,10 @@ namespace NewsApp
             {
                 Console.WriteLine(a.Title + "\n" + a.Description);
             }
+            DocumentClusterer d = new DocumentClusterer(articles);
+            d.cluster(8);
 
             /*
-            DocumentClusterer d = new DocumentClusterer(articles);
             var a1 = new NewsArticle();
             a1.Title = "mueller probe shows new findings on trump jr";
             var a2 = new NewsArticle();

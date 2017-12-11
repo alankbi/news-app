@@ -222,6 +222,7 @@
     <Compile Include="NewsArticle.cs" />
     <Compile Include="DocumentClusterer.cs" />
     <Compile Include="DocumentAnalyzer.cs" />
+    <Compile Include="Cluster.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />

@@ -15,7 +15,7 @@ namespace NewsApp
 
         // Matrix of tf-idf scores where [i, j] represents the tf-idf value for
         // the jth term in the ith document. 
-        double[,] scoreMatrix;
+        double[][] scoreMatrix;
 
         /**
          * Creates an instance with a List holding the arrays of words for
@@ -67,20 +67,28 @@ namespace NewsApp
                 }
             }
 
-            scoreMatrix = new double[articles.Count, docFrequency.Count];
+            scoreMatrix = new double[articles.Count][];
+            for (int i = 0; i < scoreMatrix.Length; i++) 
+            {
+                scoreMatrix[i] = new double[docFrequency.Count];
+            }
 
             ConstructMatrix();
         }
 
-        public double similarity(int docA, int docB)
+        /**
+         * Returns the cosine similarity between two arrays of doubles
+         * representing the tf-idf values for two documents.
+         */
+        public double Similarity(double[] docA, double[] docB)
         {
             double dotProduct, magnitudeA, magnitudeB;
             dotProduct = magnitudeA = magnitudeB = 0;
 
-            for (int j = 0; j < scoreMatrix.GetLength(1); j++)
+            for (int j = 0; j < docA.Length; j++)
             {
-                double a = scoreMatrix[docA, j];
-                double b = scoreMatrix[docB, j];
+                double a = docA[j];
+                double b = docB[j];
 
                 dotProduct += a * b;
                 magnitudeA += a * a;
@@ -90,19 +98,47 @@ namespace NewsApp
         }
 
         /**
+         * Returns the cosine similarity between an array of doubles representing
+         * tf-idf values and an int representing a document in scoreMatrix.
+         */
+        public double Similarity(double[] docA, int docB)
+        {
+            return Similarity(docA, scoreMatrix[docB]);
+        }
+
+        /**
+         * Returns the cosine similarity between two ints representing 
+         * documents in scoreMatrix. 
+         */
+        public double Similarity(int docA, int docB)
+        {
+            return Similarity(scoreMatrix[docA], scoreMatrix[docB]);
+        }
+
+        public int NumberOfTerms()
+        {
+            return docTerms.Count;
+        }
+
+        public double[] GetDocumentTfIdf(int index)
+        {
+            return scoreMatrix[index];
+        }
+
+        /**
          * Constructs the tf-idf matrix for the given documents and terms found.
          */
         private void ConstructMatrix()
         {
             // Inverted traversal to allow saving of idf calculation
-            for (int j = 0; j < scoreMatrix.GetLength(1); j++) 
+            for (int j = 0; j < scoreMatrix[0].Length; j++) 
             {
                 string word = docTerms[j];
                 double idf = IdfValue(word);
-                for (int i = 0; i < scoreMatrix.GetLength(0); i++) 
+                for (int i = 0; i < scoreMatrix.Length; i++) 
                 {
                     double tf = tfValue(word, i);
-                    scoreMatrix[i, j] = tf * idf;
+                    scoreMatrix[i][j] = tf * idf;
                 }
             }
         }
@@ -129,7 +165,8 @@ namespace NewsApp
         private double IdfValue(string term)
         {
             int freq = docFrequency[term];
-            return Math.Log((double)docTerms.Count / freq);
+            //return Math.Log((double)docTerms.Count / freq);
+            return (double)docTerms.Count / freq;
         }
 
         /**
@@ -162,11 +199,11 @@ namespace NewsApp
                 Console.WriteLine(pair.Key + " " + pair.Value);
             }
 
-            for (int i = 0; i < scoreMatrix.GetLength(0); i++)
+            for (int i = 0; i < scoreMatrix.Length; i++)
             {
-                for (int j = 0; j < scoreMatrix.GetLength(1); j++)
+                for (int j = 0; j < scoreMatrix[i].Length; j++)
                 {
-                    Console.Write(scoreMatrix[i, j] + " ");
+                    Console.Write(scoreMatrix[i][j] + " ");
                 }
                 Console.WriteLine();
             }
