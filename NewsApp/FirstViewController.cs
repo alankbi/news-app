@@ -22,8 +22,6 @@ namespace NewsApp
 
         partial void DoTestClustering(UIButton sender)
         {
-            Console.WriteLine("Test");
-
             var fetcher = new ArticleFetcher();
             var articles = fetcher.GetArticles();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace NewsApp
@@ -17,6 +18,8 @@ namespace NewsApp
         // the jth term in the ith document. 
         double[][] scoreMatrix;
 
+        HashSet<string> stopWords;
+
         /**
          * Creates an instance with a List holding the arrays of words for
          * each article and a Dictionary of the frequency of each word across
@@ -29,12 +32,16 @@ namespace NewsApp
             docFrequency = new Dictionary<string, int>();
             docTerms = new List<string>();
 
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "stopwords.txt");
+            var stopWordsAsArray = File.ReadAllLines(path);
+            stopWords = new HashSet<string>(stopWordsAsArray);
+
             foreach (NewsArticle article in articles) 
             {
                 string text = article.Title + " " + article.Description;
 
                 string[] words = text.Split(null);
-                EditForAnalysis(words);
+                words = EditForAnalysis(words);
 
                 // Create frequency of words for this particular document
                 var uniqueWords = new Dictionary<string, int>();
@@ -165,8 +172,9 @@ namespace NewsApp
         private double IdfValue(string term)
         {
             int freq = docFrequency[term];
-            //return Math.Log((double)docTerms.Count / freq);
-            return (double)docTerms.Count / freq;
+            return Math.Log((double)docTerms.Count / freq);
+            //return (double)docTerms.Count / freq;
+            //return 1;
         }
 
         /**
@@ -174,11 +182,17 @@ namespace NewsApp
          * Converts to lowercase, removes common suffixes (such as -ed, -ing), 
          * and soon to be more. TODO: remove punctuation
          */
-        public void EditForAnalysis(string[] words) 
+        public string[] EditForAnalysis(string[] words) 
         {
+            var newWords = new List<string>();
             for (int i = 0; i < words.Length; i++)
             {
                 words[i] = words[i].ToLower();
+                if (stopWords.Contains(words[i]))
+                {
+                    continue;
+                }
+
                 // Remove ed suffix
                 if (words[i].Length > 5 && words[i].Substring(words[i].Length - 2, 2) == "ed")
                 {
@@ -189,7 +203,10 @@ namespace NewsApp
                 {
                     words[i] = words[i].Substring(0, words[i].Length - 3);
                 }
+                newWords.Add(words[i]);
             }
+
+            return newWords.ToArray();
         }
 
         private void DebugMatrix()
