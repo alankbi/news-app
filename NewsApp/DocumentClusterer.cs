@@ -14,17 +14,12 @@ namespace NewsApp
         {
             this.articles = articles;
             analyzer = new DocumentAnalyzer(articles);
-            DebugSimilarity();
 
         }
 
-        public void cluster(int k)
+        public Cluster[] cluster(int k)
         {
-            // TODO: cluster articles using k-means based on tf-idf of documents. 
-            // 1. initialize random cluster points, preferably like < 0.5 similarity
-            // 2. Assign docs to closest cluster (cos sim, centroid is avg tf idf)
-            // 3. Change cluster centroids to new centroid
-            // 4. If centroids dont change, stop program, then do sorting task
+            // Possible improvement: limit min/max cluster size
 
             var clusters = new Cluster[k];
             var r = new Random();
@@ -115,16 +110,23 @@ namespace NewsApp
                 stillChanging = !unchanged;
             }
 
-            foreach (Cluster c in clusters)
+            Array.Sort(clusters, (Cluster x, Cluster y) => x.CompareTo(y, analyzer));
+            foreach(Cluster c in clusters)
+            {
+                c.Documents.Sort((int x, int y) => analyzer.Compare(x, y, c.Centroid));
+            }
+
+            /*foreach (Cluster c in clusters)
             {
                 foreach (int index in c.Documents)
                 {
                     Console.WriteLine(articles[index].Title);
                 }
                 Console.WriteLine("\n");
-            }
-            Console.WriteLine(count2 + " loops");
+            }*/
+            // TODO: create new array mapping indexes to actual articles
 
+            return clusters;
         }
 
         private void DebugSimilarity()

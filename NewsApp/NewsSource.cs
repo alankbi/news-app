@@ -3,12 +3,12 @@ namespace NewsApp
 {
     public class NewsSource
     {
-        public string id { get; set; }
-        public string name { get; set; }
+        public string ID { get; set; }
+        public string Name { get; set; }
 
 		public override int GetHashCode()
 		{
-            return id.GetHashCode();
+            return ID.GetHashCode();
 		}
     }
 }

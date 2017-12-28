@@ -143,48 +143,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Beans">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.Beans.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Charsets">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.Charsets.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Management">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.Management.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Security">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Text">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Util">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.API">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.XML.API.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Parse">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.OpenJDK.XML.Parse.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime">
-      <HintPath>..\packages\Carrot2.3.11\lib\IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Org.Carrot2.Core">
-      <HintPath>..\packages\Carrot2.3.11\lib\Org.Carrot2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Org.Carrot2.Core.NET">
-      <HintPath>..\packages\Carrot2.3.11\lib\Org.Carrot2.Core.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="Org.Carrot2.Optional.Chinese">
-      <HintPath>..\packages\Carrot2.3.11\lib\Org.Carrot2.Optional.Chinese.dll</HintPath>
-    </Reference>
-    <Reference Include="Org.Carrot2.Optional.Polish">
-      <HintPath>..\packages\Carrot2.3.11\lib\Org.Carrot2.Optional.Polish.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
@@ -223,6 +181,11 @@
     <Compile Include="DocumentClusterer.cs" />
     <Compile Include="DocumentAnalyzer.cs" />
     <Compile Include="Cluster.cs" />
+    <Compile Include="Porter2.cs" />
+    <Compile Include="DatabaseManager.cs" />
+    <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="SQLite.cs" />
+    <Compile Include="DBNewsArticle.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />

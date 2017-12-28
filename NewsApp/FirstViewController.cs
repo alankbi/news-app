@@ -32,13 +32,15 @@ namespace NewsApp
             DocumentClusterer d = new DocumentClusterer(articles);
             d.cluster(8);
 
-            /*
-            var a1 = new NewsArticle();
-            a1.Title = "mueller probe shows new findings on trump jr";
+            DatabaseManager m = new DatabaseManager();
+
+
+            /*var a1 = new NewsArticle();
+            a1.Title = "he was for unique1 it and to of";
             var a2 = new NewsArticle();
-            a2.Title = "flynn pleads guilty to perjury after mueller probe indicts him";
+            a2.Title = "the it and secondunique of to";
             var a3 = new NewsArticle();
-            a3.Title = "environmental studies have revealed a new study on health";
+            a3.Title = "with are on thethirdone in a to of";
             DocumentClusterer d = new DocumentClusterer(new List<NewsArticle>(new NewsArticle[] { a1, a2, a3 }));*/
         }
 

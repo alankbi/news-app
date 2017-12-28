@@ -19,6 +19,7 @@ namespace NewsApp
         double[][] scoreMatrix;
 
         HashSet<string> stopWords;
+        Porter2 stemmer = new Porter2();
 
         /**
          * Creates an instance with a List holding the arrays of words for
@@ -122,6 +123,24 @@ namespace NewsApp
             return Similarity(scoreMatrix[docA], scoreMatrix[docB]);
         }
 
+        public int Compare(int docA, int docB, double[] centroid)
+        {
+            double simA = Similarity(centroid, docA);
+            double simB = Similarity(centroid, docB);
+            if (simA > simB)
+            {
+                return -1;
+            }
+            else if(simA < simB)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public int NumberOfTerms()
         {
             return docTerms.Count;
@@ -188,12 +207,12 @@ namespace NewsApp
             for (int i = 0; i < words.Length; i++)
             {
                 words[i] = words[i].ToLower();
-                if (stopWords.Contains(words[i]))
+                if (stopWords.Contains(words[i]) || words[i].Equals(""))
                 {
                     continue;
                 }
 
-                // Remove ed suffix
+                /*// Remove ed suffix
                 if (words[i].Length > 5 && words[i].Substring(words[i].Length - 2, 2) == "ed")
                 {
                     words[i] = words[i].Substring(0, words[i].Length - 2);
@@ -202,8 +221,8 @@ namespace NewsApp
                 if (words[i].Length > 5 && words[i].Substring(words[i].Length - 3, 3) == "ing")
                 {
                     words[i] = words[i].Substring(0, words[i].Length - 3);
-                }
-                newWords.Add(words[i]);
+                }*/
+                newWords.Add(stemmer.stem(words[i]));
             }
 
             return newWords.ToArray();

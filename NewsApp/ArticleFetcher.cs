@@ -25,7 +25,7 @@ namespace NewsApp
          */
         public ArticleFetcher()
         {
-            newsSources = FetchAllSources(); // TODO: sources passed through constructor
+            newsSources = FetchAllSources(); // TODO: sources passed through constructor from db
         }
 
         /**
@@ -38,7 +38,7 @@ namespace NewsApp
 
 			for (int i = 0; i < newsSources.Count; i++)
 			{
-				sourceIds[i] = newsSources[i].id;
+				sourceIds[i] = newsSources[i].ID;
 			}
 
 			// Randomize sources to pull articles from
