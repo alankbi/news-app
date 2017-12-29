@@ -17,6 +17,7 @@ namespace NewsApp
             try
             {
                 conn = new SQLiteConnection(dbPath);
+                conn.CreateTable<DBNewsArticle>(); // Only if doesn't exist
             }
             catch (SQLiteException e)
             {
@@ -24,10 +25,13 @@ namespace NewsApp
             }
         }
 
+        /**
+         * Deletes old articles and adds new ones to the database
+         */
         public void AddNewClusters(Cluster[] clusters)
         {
             // Delete old ones then add new ones
-            conn.Query<DBNewsArticle>("DELETE FROM DBNewsArticle");
+            conn.Query<DBNewsArticle>("DELETE FROM NewsArticles");
 
             for (int i = 0; i < 3; i++)
             {

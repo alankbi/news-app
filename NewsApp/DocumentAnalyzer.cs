@@ -123,6 +123,11 @@ namespace NewsApp
             return Similarity(scoreMatrix[docA], scoreMatrix[docB]);
         }
 
+        /**
+         * Used to compare between articles. If docA is better, meaning it's
+         * closer to its cluster's centroid, returns a negative number so that
+         * it's put first when sorting. 
+         */
         public int Compare(int docA, int docB, double[] centroid)
         {
             double simA = Similarity(centroid, docA);

@@ -6,19 +6,24 @@ namespace NewsApp
     public class Cluster
     {
         public double[] Centroid { get; set; }
-        // Document maps to indexes for clustering, afterwards mapped to articles
+
+        // Documents maps to indexes during clustering, afterwards mapped to articles
         public List<int> Documents { get; set; }
         public List<NewsArticle> Articles { get; set; }
 
         public Cluster()
         {
             Documents = new List<int>();
+            Articles = new List<NewsArticle>();
         }
 
+        /**
+         * Used to compare between clusters. If this cluster is better, meaning less
+         * deviation, returns a negative number so that it is put first when sorted.
+         */
         public int CompareTo(Cluster other, DocumentAnalyzer analyzer)
         {
-            // Best clusters should have lower number (-1)
-
+            // TODO: Find better method, this one favors smaller clusters
             double simA, simB;
             simA = simB = 0;
 

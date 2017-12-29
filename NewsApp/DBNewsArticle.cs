@@ -2,10 +2,17 @@
 using SQLite;
 namespace NewsApp
 {
+    /**
+     * NewsArticle objects are converted into DBNewsArticle objects before being
+     * inserted into database (SQLite can't store NewsArticle's Source field
+     * variable). DBNewsArticle also has a ClusterNumber field variable to tell
+     * which cluster the article belongs to (1, 2, or 3) after being retrieved.
+     */
+    [Table("NewsArticles")]
     public class DBNewsArticle
     {
         [PrimaryKey, AutoIncrement]
-        public string ID { get; set; }
+        public int ID { get; set; }
 
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -21,6 +28,7 @@ namespace NewsApp
             // Do nothing - allows for a DBNewsArticle database
         }
 
+        // Convert types before inserting into database
         public DBNewsArticle(NewsArticle article, int clusterNumber)
         {
             Title = article.Title;

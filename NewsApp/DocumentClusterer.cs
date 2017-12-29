@@ -116,15 +116,13 @@ namespace NewsApp
                 c.Documents.Sort((int x, int y) => analyzer.Compare(x, y, c.Centroid));
             }
 
-            /*foreach (Cluster c in clusters)
+            foreach (Cluster c in clusters)
             {
                 foreach (int index in c.Documents)
                 {
-                    Console.WriteLine(articles[index].Title);
+                    c.Articles.Add(articles[index]);
                 }
-                Console.WriteLine("\n");
-            }*/
-            // TODO: create new array mapping indexes to actual articles
+            }
 
             return clusters;
         }
