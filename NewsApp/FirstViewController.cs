@@ -20,17 +20,9 @@ namespace NewsApp
 
         partial void DoTestClustering(UIButton sender)
         {
-            // TODO: Do this on loading, check if its time to update, pass cached sources
-            // to article fetcher, from then on backend should be close to finished ignoring
-            // performance tweaks
-            var fetcher = new ArticleFetcher();
-            var articles = fetcher.GetArticles();
+            // TODO: start work on frontend, later make performance tweaks to clustering
 
-            DocumentClusterer d = new DocumentClusterer(articles);
-            Cluster[] clusters = d.cluster(8);
-
-            DatabaseManager m = new DatabaseManager();
-            m.AddNewClusters(clusters);
+            // Fetching and clustering code moved to AppDelegate FinishedLaunching method
 
             /* DEBUGGING CODE
             foreach (NewsArticle a in articles)

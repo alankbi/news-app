@@ -8,16 +8,22 @@ namespace NewsApp
     {
         private string dbPath;
         private SQLiteConnection conn;
-        // TODO: Cache sources in separate database, update every week or two
+
+        private string sourcesDbPath;
+        private SQLiteConnection sourcesConn;
 
         public DatabaseManager()
         {
             dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Clusters");
+            sourcesDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Sources");
 
             try
             {
                 conn = new SQLiteConnection(dbPath);
                 conn.CreateTable<DBNewsArticle>(); // Only if doesn't exist
+
+                sourcesConn = new SQLiteConnection(sourcesDbPath);
+                sourcesConn.CreateTable<NewsSource>();
             }
             catch (SQLiteException e)
             {
@@ -64,6 +70,36 @@ namespace NewsApp
         public DateTime LastUpdated()
         {
             return File.GetLastWriteTime(dbPath);
+        }
+
+        public List<NewsSource> GetSources()
+        {
+            if ((DateTime.Now - SourcesLastUpdated()).TotalDays >= 14)
+            {
+                sourcesConn.Query<NewsSource>("DELETE FROM Sources");
+
+                var sources = ArticleFetcher.GetListOfSources();
+                foreach (var source in sources)
+                {
+                    sourcesConn.Insert(source);
+                }
+                return sources;
+            }
+            else
+            {
+                var temp = sourcesConn.Table<NewsSource>();
+                var sources = new List<NewsSource>();
+                foreach (var source in temp)
+                {
+                    sources.Add(source);
+                }
+                return sources;
+            }
+        }
+
+        private DateTime SourcesLastUpdated()
+        {
+            return File.GetLastWriteTime(sourcesDbPath);
         }
     }
 }

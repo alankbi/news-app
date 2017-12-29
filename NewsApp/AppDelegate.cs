@@ -1,4 +1,5 @@
-﻿using Foundation;
+﻿using System;
+using Foundation;
 using UIKit;
 
 namespace NewsApp
@@ -20,6 +21,17 @@ namespace NewsApp
         {
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
+
+            DatabaseManager manager = new DatabaseManager();
+            if ((DateTime.Now - manager.LastUpdated()).TotalHours >= 8)
+            {
+                var fetcher = new ArticleFetcher(manager.GetSources());
+                var articles = fetcher.GetArticles();
+
+                DocumentClusterer d = new DocumentClusterer(articles);
+                Cluster[] clusters = d.cluster(8);
+                manager.AddNewClusters(clusters);
+            }
 
             return true;
         }

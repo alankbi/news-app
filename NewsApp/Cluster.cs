@@ -24,6 +24,17 @@ namespace NewsApp
         public int CompareTo(Cluster other, DocumentAnalyzer analyzer)
         {
             // TODO: Find better method, this one favors smaller clusters
+
+            // Put clusters with only one article at the ends
+            if (Documents.Count == 1)
+            {
+                return 1;
+            }
+            if (other.Documents.Count == 1)
+            {
+                return -1;
+            }
+
             double simA, simB;
             simA = simB = 0;
 

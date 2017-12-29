@@ -11,7 +11,7 @@ namespace NewsApp
 {
     public class ArticleFetcher
     {
-        private string apiKey = "7f89b3f5d0ee4aa0aada683a0e2757a8";
+        private static string apiKey = "7f89b3f5d0ee4aa0aada683a0e2757a8";
 
         private List<NewsSource> newsSources;
 
@@ -23,9 +23,9 @@ namespace NewsApp
          * which will be later used to create documents for clustering. Will
          * be changed later on to accept NewsSources as parameter. 
          */
-        public ArticleFetcher()
+        public ArticleFetcher(List<NewsSource> sources)
         {
-            newsSources = FetchAllSources(); // TODO: sources passed through constructor from db
+            newsSources = sources; //FetchAllSources(); // TODO: sources passed through constructor from db
         }
 
         /**
@@ -79,7 +79,7 @@ namespace NewsApp
          * Returns all of the english sources from NewsAPI. Eventually this will be
          * cached in a database. 
          */
-        private List<NewsSource> FetchAllSources() 
+        public static List<NewsSource> GetListOfSources() 
         {
 			string url = "https://newsapi.org/v2/sources?language=en&apiKey=" + apiKey;
 			string json = ExecuteCall(url);
@@ -92,7 +92,7 @@ namespace NewsApp
         /**
          * Executes an API request for the given url. 
          */
-        private string ExecuteCall(string url)
+        public static string ExecuteCall(string url)
         {
             string json = null;
 			using (WebClient wc = new WebClient())
