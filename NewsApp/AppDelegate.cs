@@ -11,6 +11,9 @@ namespace NewsApp
     {
         // class-level declarations
 
+        UIWindow window;
+        TabController tabController;
+
         public override UIWindow Window
         {
             get;
@@ -22,9 +25,23 @@ namespace NewsApp
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
 
+            window = new UIWindow(UIScreen.MainScreen.Bounds);
+
+            tabController = new TabController();
+            window.RootViewController = tabController;
+
+            window.MakeKeyAndVisible();
+
+            // ###############
+
             DatabaseManager manager = new DatabaseManager();
-            if ((DateTime.Now - manager.LastUpdated()).TotalHours >= 8)
+
+            double timePassed = (DateTime.Now - manager.LastUpdated()).TotalHours;
+            Console.WriteLine("Hours since last update: " + timePassed);
+
+            if (timePassed >= 8)
             {
+                Console.WriteLine("Articles Updated");
                 var fetcher = new ArticleFetcher(manager.GetSources());
                 var articles = fetcher.GetArticles();
 

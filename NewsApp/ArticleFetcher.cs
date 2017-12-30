@@ -25,7 +25,7 @@ namespace NewsApp
          */
         public ArticleFetcher(List<NewsSource> sources)
         {
-            newsSources = sources; //FetchAllSources(); // TODO: sources passed through constructor from db
+            newsSources = sources; 
         }
 
         /**

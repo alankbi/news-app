@@ -158,6 +158,7 @@
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
     <InterfaceDefinition Include="Main.storyboard" />
+    <InterfaceDefinition Include="ArticleViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -186,6 +187,15 @@
     <Compile Include="SQLiteAsync.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="DBNewsArticle.cs" />
+    <Compile Include="ThirdViewController.cs" />
+    <Compile Include="ThirdViewController.designer.cs">
+      <DependentUpon>ThirdViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TabController.cs" />
+    <Compile Include="ArticleViewController.cs" />
+    <Compile Include="ArticleViewController.designer.cs">
+      <DependentUpon>ArticleViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />
