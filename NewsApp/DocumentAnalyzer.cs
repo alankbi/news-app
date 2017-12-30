@@ -33,9 +33,11 @@ namespace NewsApp
             docFrequency = new Dictionary<string, int>();
             docTerms = new List<string>();
 
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "stopwords.txt");
-            var stopWordsAsArray = File.ReadAllLines(path);
-            stopWords = new HashSet<string>(stopWordsAsArray);
+            // Commented out until I can find good way to initially load in the list of stopwords
+            //var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "stopwords.txt");
+            //var stopWordsAsArray = File.ReadAllLines(path);
+            //stopWords = new HashSet<string>(stopWordsAsArray);
+            stopWords = new HashSet<string>(new string[]{"the", "be", "to", "of", "and", "a"});
 
             foreach (NewsArticle article in articles) 
             {

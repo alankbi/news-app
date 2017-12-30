@@ -32,24 +32,6 @@ namespace NewsApp
 
             window.MakeKeyAndVisible();
 
-            // ###############
-
-            DatabaseManager manager = new DatabaseManager();
-
-            double timePassed = (DateTime.Now - manager.LastUpdated()).TotalHours;
-            Console.WriteLine("Hours since last update: " + timePassed);
-
-            if (timePassed >= 8)
-            {
-                Console.WriteLine("Articles Updated");
-                var fetcher = new ArticleFetcher(manager.GetSources());
-                var articles = fetcher.GetArticles();
-
-                DocumentClusterer d = new DocumentClusterer(articles);
-                Cluster[] clusters = d.cluster(8);
-                manager.AddNewClusters(clusters);
-            }
-
             return true;
         }
 

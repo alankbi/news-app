@@ -18,23 +18,27 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <subviews>
                 <navigationBar contentMode="scaleToFill" id="291" translatesAutoresizingMaskIntoConstraints="NO">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                    <rect key="frame" x="0.0" y="11" width="414" height="44"/>
                     <items>
                         <navigationItem title="NewsApp" id="292"/>
                     </items>
                 </navigationBar>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" id="308" translatesAutoresizingMaskIntoConstraints="NO" text="Temp gjodj fljsdlfk jlksjflksjfkl jlksdjf kljfdfhkf   djfjd sjdf ldjf sadlf kjflkadsj lkdsjf lksj f" editable="NO" selectable="NO" fixedFrame="YES">
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" id="308" translatesAutoresizingMaskIntoConstraints="NO" text="Article Title" editable="NO" selectable="NO">
                     <rect key="frame" x="20" y="63" width="374" height="151"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" type="system" pointSize="28"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </textView>
             </subviews>
             <constraints>
-                <constraint id="305" firstItem="291" firstAttribute="leading" secondItem="2" secondAttribute="leading"/>
-                <constraint id="306" firstItem="291" firstAttribute="trailing" secondItem="2" secondAttribute="trailing"/>
-                <constraint id="307" firstItem="291" firstAttribute="top" secondItem="2" secondAttribute="top"/>
+                <constraint id="716" firstItem="2" firstAttribute="trailing" secondItem="308" secondAttribute="trailing" constant="20"/>
+                <constraint id="717" firstItem="308" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="20"/>
+                <constraint id="718" firstItem="2" firstAttribute="bottom" secondItem="308" secondAttribute="bottom" constant="522"/>
+                <constraint id="1800" firstItem="291" firstAttribute="top" secondItem="2" secondAttribute="top" constant="11"/>
+                <constraint id="1801" firstItem="2" firstAttribute="bottom" secondItem="291" secondAttribute="bottom" constant="681"/>
+                <constraint id="1802" firstItem="291" firstAttribute="trailing" secondItem="2" secondAttribute="trailing"/>
+                <constraint id="1803" firstItem="291" firstAttribute="leading" secondItem="2" secondAttribute="leading"/>
+                <constraint id="1804" firstItem="308" firstAttribute="top" secondItem="291" secondAttribute="bottom" constant="8"/>
             </constraints>
         </view>
     </objects>

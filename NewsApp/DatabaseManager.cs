@@ -12,10 +12,13 @@ namespace NewsApp
         private string sourcesDbPath;
         private SQLiteConnection sourcesConn;
 
+        public bool FirstTime { get; private set; }
+
         public DatabaseManager()
         {
             dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Clusters");
             sourcesDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Sources");
+            FirstTime = !File.Exists(dbPath);
 
             try
             {
@@ -74,7 +77,7 @@ namespace NewsApp
 
         public List<NewsSource> GetSources()
         {
-            if ((DateTime.Now - SourcesLastUpdated()).TotalDays >= 14)
+            if ((DateTime.Now - SourcesLastUpdated()).TotalDays >= 14 || FirstTime)
             {
                 sourcesConn.Query<NewsSource>("DELETE FROM Sources");
 
