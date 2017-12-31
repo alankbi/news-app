@@ -17,10 +17,12 @@ namespace NewsApp
         private float Height = (float)UIScreen.MainScreen.Bounds.Height; // 667
 
         UINavigationBar bar;
-        UITextView barText;
+        UILabel barText;
 
-        UITextView articleTitle;
+        UILabel articleTitle;
         UIImageView articleImage;
+        UILabel articleUrl;
+        UILabel articleSource;
 
         public ArticleViewController(Cluster cluster) : base("ArticleViewController", null)
         {
@@ -37,29 +39,53 @@ namespace NewsApp
             bar.BarTintColor = UIColor.Blue;
             View.AddSubview(bar);
 
-            barText = new UITextView(new RectangleF(0, 8, Width, 45));
+            barText = new UILabel(new RectangleF(0, 8, Width, 45));
             barText.Text = "NewsApp";
             barText.TextAlignment = UITextAlignment.Center;
             barText.Font = UIFont.SystemFontOfSize(18);
             barText.TextColor = UIColor.White;
             barText.BackgroundColor = UIColor.Clear;
-            barText.Editable = false;
-            barText.Selectable = false;
             View.AddSubview(barText);
 
-            articleImage = new UIImageView(new RectangleF(Width / 20, (float) bar.Frame.Bottom + Height / 20, Width - Width / 10, Height / 4));
-            articleImage.Image = FromUrl(articles[index].UrlToImage);Console.WriteLine(articles[index].UrlToImage);
+            articleImage = new UIImageView(new RectangleF(Width / 20, (float) bar.Frame.Bottom + Height / 10, Width - Width / 10, Height / 3));
+            articleImage.Image = FromUrl(articles[index].UrlToImage);
             View.AddSubview(articleImage);
+
+            articleSource = new UILabel(new RectangleF(Width / 20, (float)articleImage.Frame.Top - 70, Width - Width / 10, 70));
+            articleSource.Text = articles[index].Source.Name;
+            articleSource.Font = UIFont.SystemFontOfSize(15 + (int)(Width / 20));
+            articleSource.AdjustsFontSizeToFitWidth = true;
+            articleSource.AdjustsFontForContentSizeCategory = true;
+            articleSource.TranslatesAutoresizingMaskIntoConstraints = true;
+            articleSource.SizeToFit();
+            articleSource.Frame = new RectangleF(Width / 20, (float)(articleImage.Frame.Top - articleSource.Frame.Height), Width - Width / 10, (float)articleSource.Frame.Height);
+            articleSource.TextColor = UIColor.Black;
+            articleSource.BackgroundColor = UIColor.Blue; // DEBUG
+            View.AddSubview(articleSource);
 
             // Insert here source name and article url
 
-            articleTitle = new UITextView(new RectangleF(Width / 20, (float) articleImage.Frame.Bottom + Height / 10, Width - Width / 10, Height / 4));
+            articleUrl = new UILabel(new RectangleF(Width / 20, (float)articleImage.Frame.Bottom, Width - Width / 10, Height / 10));
+            articleUrl.Lines = 0;
+            articleUrl.Text = articles[index].Url;
+            articleUrl.Font = UIFont.SystemFontOfSize(6 + (int)(Width / 60));
+            articleUrl.TranslatesAutoresizingMaskIntoConstraints = true;
+            articleUrl.SizeToFit();
+            articleUrl.Frame = new RectangleF(Width / 20, (float)articleImage.Frame.Bottom, Width - Width / 10, (float)articleUrl.Frame.Height);
+            articleUrl.TextColor = UIColor.Gray;
+            articleUrl.BackgroundColor = UIColor.Blue; // DEBUG
+            View.AddSubview(articleUrl);
+
+
+            articleTitle = new UILabel(new RectangleF(Width / 20, (float) articleUrl.Frame.Bottom + Height / 30, Width - Width / 10, Height / 4));
+            articleTitle.Lines = 0;
             articleTitle.Text = articles[index].Title;
             articleTitle.Font = UIFont.SystemFontOfSize(14 + (int) (Width / 30));
+            articleTitle.TranslatesAutoresizingMaskIntoConstraints = true;
+            articleTitle.SizeToFit();
+            articleTitle.Frame = new RectangleF(Width / 20, (float)articleUrl.Frame.Bottom + Height / 30, Width - Width / 10, (float)articleTitle.Frame.Height);
             articleTitle.TextColor = UIColor.Black;
-            //articleTitle.BackgroundColor = UIColor.Blue; // DEBUG
-            articleTitle.Editable = false;
-            articleTitle.Selectable = false;
+            articleTitle.BackgroundColor = UIColor.Blue; // DEBUG
             View.AddSubview(articleTitle);
 
 
