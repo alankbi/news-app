@@ -14,16 +14,8 @@ namespace NewsApp
     [Register ("ArticleViewController")]
     partial class ArticleViewController
     {
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITextView articleTitle { get; set; }
-
         void ReleaseDesignerOutlets ()
         {
-            if (articleTitle != null) {
-                articleTitle.Dispose ();
-                articleTitle = null;
-            }
         }
     }
 }
