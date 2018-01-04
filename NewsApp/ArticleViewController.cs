@@ -17,6 +17,7 @@ namespace NewsApp
         private UISwipeGestureRecognizer gestureRight;
 
         private UIView[] articleDisplays;
+        private bool[] clicked;
 
         private float Width = (float) UIScreen.MainScreen.Bounds.Width; // 375 iPhone 8
         private float Height = (float)UIScreen.MainScreen.Bounds.Height; // 667
@@ -28,12 +29,15 @@ namespace NewsApp
         UIButton leftButton;
         UIButton rightButton;
 
+        UIButton link;
+
         public ArticleViewController(Cluster cluster) : base("ArticleViewController", null)
         {
             this.articles = cluster.Articles;
             index = 0;
 
             articleDisplays = new UIView[articles.Count];
+            clicked = new bool[articles.Count];
 
             gestureLeft = new UISwipeGestureRecognizer();
             gestureLeft.Direction = UISwipeGestureRecognizerDirection.Left;
@@ -91,6 +95,10 @@ namespace NewsApp
             rightButton.HorizontalAlignment = UIControlContentHorizontalAlignment.Left;
             View.AddSubview(rightButton);
 
+            link = UIButton.FromType(UIButtonType.System);
+            link.Frame = new RectangleF(Width / 20, (float)bar.Frame.Bottom + Height / 10, Width - Width / 10, Height * 7 / 10 - (float)bar.Frame.Bottom);
+            View.AddSubview(link);
+
             leftButton.TouchUpInside += (sender, e) => 
             {
                 HandleSwipe(index - 1);
@@ -101,12 +109,32 @@ namespace NewsApp
                 HandleSwipe(index + 1);
             };
 
+            link.TouchDown += (sender, e) =>
+            {
+                link.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 60);
+            };
+
+            link.TouchDragInside += (sender, e) => 
+            {
+                if (!clicked[index])
+                {
+                    link.BackgroundColor = UIColor.Clear;
+                }
+            };
+
+            link.TouchUpInside += (sender, e) => 
+            {
+                // Open news article
+                clicked[index] = true;
+            };
+
             for (int i = 0; i < articleDisplays.Length; i++)
             {
                 articleDisplays[i] = InitializeArticleDisplays(articles[i]);
             }
 
             View.AddSubview(articleDisplays[index]);
+            View.BringSubviewToFront(link);
         }
 
         private UIView InitializeArticleDisplays(NewsArticle article)
@@ -165,6 +193,7 @@ namespace NewsApp
             articleDescription.BackgroundColor = UIColor.Gray; // DEBUG
             articleDescription.Editable = false;
             articleDescription.Selectable = false;
+            articleDescription.TextContainer.LineBreakMode = UILineBreakMode.TailTruncation;
             tempView.AddSubview(articleDescription);
 
             return tempView;
@@ -210,6 +239,15 @@ namespace NewsApp
             else if (index == 0)
             {
                 leftButton.Enabled = false;
+            }
+
+            if (clicked[index])
+            {
+                link.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 60);
+            }
+            else
+            {
+                link.BackgroundColor = UIColor.Clear;
             }
         }
 
