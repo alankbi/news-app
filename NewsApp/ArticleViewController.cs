@@ -13,7 +13,8 @@ namespace NewsApp
         private List<NewsArticle> articles;
         private int index;
 
-        private UISwipeGestureRecognizer gesture;
+        private UISwipeGestureRecognizer gestureLeft;
+        private UISwipeGestureRecognizer gestureRight;
 
         private UIView[] articleDisplays;
 
@@ -22,6 +23,10 @@ namespace NewsApp
 
         UINavigationBar bar;
         UILabel barText;
+        UILabel similarArticles;
+
+        UIButton leftButton;
+        UIButton rightButton;
 
         public ArticleViewController(Cluster cluster) : base("ArticleViewController", null)
         {
@@ -30,9 +35,15 @@ namespace NewsApp
 
             articleDisplays = new UIView[articles.Count];
 
-            gesture = new UISwipeGestureRecognizer();
-            gesture.AddTarget(() => HandleSwipe());
-            View.AddGestureRecognizer(gesture);
+            gestureLeft = new UISwipeGestureRecognizer();
+            gestureLeft.Direction = UISwipeGestureRecognizerDirection.Left;
+            gestureLeft.AddTarget(() => HandleSwipe(index + 1));
+            View.AddGestureRecognizer(gestureLeft);
+
+            gestureRight = new UISwipeGestureRecognizer();
+            gestureRight.Direction = UISwipeGestureRecognizerDirection.Right;
+            gestureRight.AddTarget(() => HandleSwipe(index - 1));
+            View.AddGestureRecognizer(gestureRight);
         }
 
         public override void ViewDidLoad()
@@ -52,6 +63,44 @@ namespace NewsApp
             barText.BackgroundColor = UIColor.Clear;
             View.AddSubview(barText);
 
+            similarArticles = new UILabel(new RectangleF(0, Height - Height / 6, Width, Height * 2 / 15));
+            similarArticles.Lines = 0;
+            similarArticles.Text = "Similar Articles (1/" + articles.Count + ")";
+            similarArticles.TextAlignment = UITextAlignment.Center;
+            similarArticles.Font = UIFont.SystemFontOfSize(14 + (int)(Width / 25));
+            similarArticles.AdjustsFontForContentSizeCategory = true;
+            similarArticles.TranslatesAutoresizingMaskIntoConstraints = true;
+            similarArticles.SizeToFit();
+            similarArticles.Frame = new RectangleF((float)(Width / 2 - similarArticles.Frame.Width / 2 - 6), Height - Height / 6, (float)(similarArticles.Frame.Width + 12), (float)similarArticles.Frame.Height);
+            similarArticles.TextColor = UIColor.Black;
+            similarArticles.BackgroundColor = UIColor.Gray; // DEBUG
+            View.AddSubview(similarArticles);
+
+            leftButton = UIButton.FromType(UIButtonType.System);
+            leftButton.Frame = new RectangleF(0, (float)similarArticles.Frame.Top, (float)similarArticles.Frame.Left - 5, (float)similarArticles.Frame.Height);
+            leftButton.SetTitle("<", UIControlState.Normal);
+            leftButton.Font = UIFont.SystemFontOfSize(14 + (int)(Width / 25));
+            leftButton.HorizontalAlignment = UIControlContentHorizontalAlignment.Right;
+            leftButton.Enabled = false;
+            View.AddSubview(leftButton);
+
+            rightButton = UIButton.FromType(UIButtonType.System);
+            rightButton.Frame = new RectangleF((float)similarArticles.Frame.Right + 5, (float)similarArticles.Frame.Top, (float)(similarArticles.Frame.Left - 5), (float)similarArticles.Frame.Height);
+            rightButton.SetTitle(">", UIControlState.Normal);
+            rightButton.Font = UIFont.SystemFontOfSize(14 + (int)(Width / 25));
+            rightButton.HorizontalAlignment = UIControlContentHorizontalAlignment.Left;
+            View.AddSubview(rightButton);
+
+            leftButton.TouchUpInside += (sender, e) => 
+            {
+                HandleSwipe(index - 1);
+            };
+
+            rightButton.TouchUpInside += (sender, e) => 
+            {
+                HandleSwipe(index + 1);
+            };
+
             for (int i = 0; i < articleDisplays.Length; i++)
             {
                 articleDisplays[i] = InitializeArticleDisplays(articles[i]);
@@ -68,7 +117,7 @@ namespace NewsApp
             UIImageView articleImage;
             UILabel articleUrl;
             UILabel articleSource;
-            UILabel articleDescription;
+            UITextView articleDescription; // UILabels don't align to the top
 
             articleImage = new UIImageView(new RectangleF(Width / 20, (float)bar.Frame.Bottom + Height / 10, Width - Width / 10, Height / 3));
             articleImage.Image = FromUrl(article.UrlToImage);
@@ -87,7 +136,7 @@ namespace NewsApp
             tempView.AddSubview(articleSource);
 
             articleUrl = new UILabel(new RectangleF(Width / 20, (float)articleImage.Frame.Bottom, Width - Width / 10, Height / 10));
-            articleUrl.Lines = 0;
+            articleUrl.Lines = 1;
             articleUrl.Text = article.Url;
             articleUrl.Font = UIFont.SystemFontOfSize(6 + (int)(Width / 50));
             articleUrl.TranslatesAutoresizingMaskIntoConstraints = true;
@@ -109,12 +158,13 @@ namespace NewsApp
             tempView.AddSubview(articleTitle);
 
 
-            articleDescription = new UILabel(new RectangleF(Width / 20, (float)articleTitle.Frame.Bottom, Width - Width / 10, (float)(Height * 4 / 5 - articleTitle.Frame.Bottom)));
-            articleDescription.Lines = 0;
+            articleDescription = new UITextView(new RectangleF(Width / 20, (float)articleTitle.Frame.Bottom, Width - Width / 10, (float)(Height * 4 / 5 - articleTitle.Frame.Bottom)));
             articleDescription.Text = article.Description;
             articleDescription.Font = UIFont.SystemFontOfSize(10 + (int)(Width / 50));
             articleDescription.TextColor = UIColor.Black;
             articleDescription.BackgroundColor = UIColor.Gray; // DEBUG
+            articleDescription.Editable = false;
+            articleDescription.Selectable = false;
             tempView.AddSubview(articleDescription);
 
             return tempView;
@@ -136,12 +186,31 @@ namespace NewsApp
             }
         }
 
-        private void HandleSwipe()
+        private void HandleSwipe(int newIndex)
         {
             // currently only recognizes right swipe
-            Console.WriteLine(gesture.Direction);
-            UIView.Transition(articleDisplays[index], articleDisplays[index + 1], .3f, UIViewAnimationOptions.TransitionFlipFromTop, null);
-            index++;
+            if (newIndex >= articles.Count || newIndex < 0)
+            {
+                return;
+            }
+
+            UIView.Transition(articleDisplays[index], articleDisplays[newIndex], .3f, UIViewAnimationOptions.TransitionFlipFromTop, null);
+            index = newIndex;
+
+            similarArticles.Text = "Similar Articles (" + (index + 1) + "/" + articles.Count + ")";
+            similarArticles.SetNeedsDisplay();
+
+            leftButton.Enabled = true;
+            rightButton.Enabled = true;
+
+            if (index == articles.Count - 1)
+            {
+                rightButton.Enabled = false;
+            } 
+            else if (index == 0)
+            {
+                leftButton.Enabled = false;
+            }
         }
 
         public override void DidReceiveMemoryWarning()
