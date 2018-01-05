@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using CoreGraphics;
 using Foundation;
+using SafariServices;
 
 using UIKit;
 
@@ -15,6 +16,8 @@ namespace NewsApp
 
         private UISwipeGestureRecognizer gestureLeft;
         private UISwipeGestureRecognizer gestureRight;
+
+        private UIColor testColor = UIColor.FromRGB(55, 150, 220);
 
         private UIView[] articleDisplays;
         private bool[] clicked;
@@ -56,10 +59,10 @@ namespace NewsApp
             // Perform any additional setup after loading the view, typically from a nib.
 
             bar = new UINavigationBar(new CGRect(0, 0, Width, 45));
-            bar.BarTintColor = UIColor.Blue;
+            bar.BarTintColor = testColor;
             View.AddSubview(bar);
 
-            barText = new UILabel(new RectangleF(0, 8, Width, 45));
+            barText = new UILabel(new RectangleF(0, 6, Width, 45));
             barText.Text = "NewsApp";
             barText.TextAlignment = UITextAlignment.Center;
             barText.Font = UIFont.SystemFontOfSize(18);
@@ -76,8 +79,7 @@ namespace NewsApp
             similarArticles.TranslatesAutoresizingMaskIntoConstraints = true;
             similarArticles.SizeToFit();
             similarArticles.Frame = new RectangleF((float)(Width / 2 - similarArticles.Frame.Width / 2 - 6), Height - Height / 6, (float)(similarArticles.Frame.Width + 12), (float)similarArticles.Frame.Height);
-            similarArticles.TextColor = UIColor.Black;
-            similarArticles.BackgroundColor = UIColor.Gray; // DEBUG
+            similarArticles.TextColor = testColor;
             View.AddSubview(similarArticles);
 
             leftButton = UIButton.FromType(UIButtonType.System);
@@ -97,6 +99,11 @@ namespace NewsApp
 
             link = UIButton.FromType(UIButtonType.System);
             link.Frame = new RectangleF(Width / 20, (float)bar.Frame.Bottom + Height / 10, Width - Width / 10, Height * 7 / 10 - (float)bar.Frame.Bottom);
+            link.Layer.ShadowColor = UIColor.Gray.CGColor;
+            link.Layer.Opacity = 1f;
+            link.Layer.ShadowRadius = 5f;
+            link.Layer.ShadowOffset = new SizeF(3f, 3f);
+            link.Layer.MasksToBounds = false;
             View.AddSubview(link);
 
             leftButton.TouchUpInside += (sender, e) => 
@@ -124,7 +131,8 @@ namespace NewsApp
 
             link.TouchUpInside += (sender, e) => 
             {
-                // Open news article
+                var webView = new SFSafariViewController(new NSUrl(articles[index].Url));
+                PresentViewController(webView, true, null);
                 clicked[index] = true;
             };
 
@@ -149,6 +157,8 @@ namespace NewsApp
 
             articleImage = new UIImageView(new RectangleF(Width / 20, (float)bar.Frame.Bottom + Height / 10, Width - Width / 10, Height / 3));
             articleImage.Image = FromUrl(article.UrlToImage);
+            articleImage.Layer.BorderWidth = 1;
+            articleImage.Layer.BorderColor = UIColor.Gray.CGColor;
             tempView.AddSubview(articleImage);
 
             articleSource = new UILabel(new RectangleF(Width / 20, (float)articleImage.Frame.Top - 70, Width - Width / 10, 70));
@@ -160,7 +170,8 @@ namespace NewsApp
             articleSource.SizeToFit();
             articleSource.Frame = new RectangleF(Width / 20, (float)(articleImage.Frame.Top - articleSource.Frame.Height), Width - Width / 10, (float)articleSource.Frame.Height);
             articleSource.TextColor = UIColor.Black;
-            articleSource.BackgroundColor = UIColor.Blue; // DEBUG
+            //articleSource.BackgroundColor = UIColor.Blue; // DEBUG
+            articleSource.BackgroundColor = testColor;
             tempView.AddSubview(articleSource);
 
             articleUrl = new UILabel(new RectangleF(Width / 20, (float)articleImage.Frame.Bottom, Width - Width / 10, Height / 10));
@@ -170,8 +181,8 @@ namespace NewsApp
             articleUrl.TranslatesAutoresizingMaskIntoConstraints = true;
             articleUrl.SizeToFit();
             articleUrl.Frame = new RectangleF(Width / 20, (float)articleImage.Frame.Bottom, Width - Width / 10, (float)articleUrl.Frame.Height);
-            articleUrl.TextColor = UIColor.Gray;
-            articleUrl.BackgroundColor = UIColor.Blue; // DEBUG
+            articleUrl.TextColor = UIColor.DarkGray;
+            articleUrl.BackgroundColor = UIColor.LightGray;
             tempView.AddSubview(articleUrl);
 
             articleTitle = new UILabel(new RectangleF(Width / 20, (float)articleUrl.Frame.Bottom + Height / 30, Width - Width / 10, Height / 4));
@@ -182,7 +193,7 @@ namespace NewsApp
             articleTitle.SizeToFit();
             articleTitle.Frame = new RectangleF(Width / 20, (float)articleUrl.Frame.Bottom + Height / 30, Width - Width / 10, (float)articleTitle.Frame.Height);
             articleTitle.TextColor = UIColor.Black;
-            articleTitle.BackgroundColor = UIColor.Blue; // DEBUG
+            articleTitle.BackgroundColor = testColor;//UIColor.Gray; // DEBUG
             tempView.AddSubview(articleTitle);
 
 
@@ -190,7 +201,7 @@ namespace NewsApp
             articleDescription.Text = article.Description;
             articleDescription.Font = UIFont.SystemFontOfSize(10 + (int)(Width / 50));
             articleDescription.TextColor = UIColor.Black;
-            articleDescription.BackgroundColor = UIColor.Gray; // DEBUG
+            articleDescription.BackgroundColor = UIColor.LightGray; // DEBUG
             articleDescription.Editable = false;
             articleDescription.Selectable = false;
             articleDescription.TextContainer.LineBreakMode = UILineBreakMode.TailTruncation;
@@ -249,6 +260,7 @@ namespace NewsApp
             {
                 link.BackgroundColor = UIColor.Clear;
             }
+            View.BringSubviewToFront(link);
         }
 
         public override void DidReceiveMemoryWarning()
