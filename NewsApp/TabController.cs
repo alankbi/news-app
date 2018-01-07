@@ -29,13 +29,16 @@ namespace NewsApp
                 clusters = manager.GetClusters();
             }
 
-            tab1 = new ArticleViewController(clusters[0]);
+            int secondsRemaining = (int)(8 * 60 * 60 - timePassed * 60 * 60);
+            DateTime needsUpdate = manager.LastUpdated().AddHours(8);
+
+            tab1 = new ArticleViewController(clusters[0], needsUpdate);
             tab1.Title = "First";
 
-            tab2 = new ArticleViewController(clusters[1]);
+            tab2 = new ArticleViewController(clusters[1], needsUpdate);
             tab2.Title = "Second";
 
-            tab3 = new ArticleViewController(clusters[2]);
+            tab3 = new ArticleViewController(clusters[2], needsUpdate);
             tab3.Title = "Third";
 
             var tabs = new UIViewController[] {

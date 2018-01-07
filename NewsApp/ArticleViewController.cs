@@ -4,6 +4,8 @@ using System.Drawing;
 using CoreGraphics;
 using Foundation;
 using SafariServices;
+using System.Timers;
+using System.Threading.Tasks;
 
 using UIKit;
 
@@ -17,27 +19,33 @@ namespace NewsApp
         private UISwipeGestureRecognizer gestureLeft;
         private UISwipeGestureRecognizer gestureRight;
 
-        private UIColor testColor = UIColor.FromRGB(55, 150, 220);
+        private UIColor testColor = UIColor.FromRGB(65, 179, 247);
 
         private UIView[] articleDisplays;
         private bool[] clicked;
+
+        private DateTime needsUpdate;
+        private UILabel loading;
 
         private float Width = (float) UIScreen.MainScreen.Bounds.Width; // 375 iPhone 8
         private float Height = (float)UIScreen.MainScreen.Bounds.Height; // 667
 
         UINavigationBar bar;
         UILabel barText;
+        UILabel time;
         UILabel similarArticles;
 
         UIButton leftButton;
         UIButton rightButton;
 
         UIButton link;
+        UIView shade;
 
-        public ArticleViewController(Cluster cluster) : base("ArticleViewController", null)
+        public ArticleViewController(Cluster cluster, DateTime needsUpdate) : base("ArticleViewController", null)
         {
             this.articles = cluster.Articles;
             index = 0;
+            this.needsUpdate = needsUpdate;
 
             articleDisplays = new UIView[articles.Count];
             clicked = new bool[articles.Count];
@@ -70,7 +78,7 @@ namespace NewsApp
             barText.BackgroundColor = UIColor.Clear;
             View.AddSubview(barText);
 
-            similarArticles = new UILabel(new RectangleF(0, Height - Height / 6, Width, Height * 2 / 15));
+            similarArticles = new UILabel(new RectangleF(0, Height - Height * 11 / 60, Width, Height * 2 / 15));
             similarArticles.Lines = 0;
             similarArticles.Text = "Similar Articles (1/" + articles.Count + ")";
             similarArticles.TextAlignment = UITextAlignment.Center;
@@ -78,7 +86,7 @@ namespace NewsApp
             similarArticles.AdjustsFontForContentSizeCategory = true;
             similarArticles.TranslatesAutoresizingMaskIntoConstraints = true;
             similarArticles.SizeToFit();
-            similarArticles.Frame = new RectangleF((float)(Width / 2 - similarArticles.Frame.Width / 2 - 6), Height - Height / 6, (float)(similarArticles.Frame.Width + 12), (float)similarArticles.Frame.Height);
+            similarArticles.Frame = new RectangleF((float)(Width / 2 - similarArticles.Frame.Width / 2 - 6), Height - Height * 11 / 60, (float)(similarArticles.Frame.Width + 12), (float)similarArticles.Frame.Height);
             similarArticles.TextColor = testColor;
             View.AddSubview(similarArticles);
 
@@ -86,6 +94,8 @@ namespace NewsApp
             leftButton.Frame = new RectangleF(0, (float)similarArticles.Frame.Top, (float)similarArticles.Frame.Left - 5, (float)similarArticles.Frame.Height);
             leftButton.SetTitle("<", UIControlState.Normal);
             leftButton.Font = UIFont.SystemFontOfSize(14 + (int)(Width / 25));
+            leftButton.SetTitleColor(testColor, UIControlState.Normal);
+            leftButton.SetTitleColor(UIColor.LightGray, UIControlState.Disabled);
             leftButton.HorizontalAlignment = UIControlContentHorizontalAlignment.Right;
             leftButton.Enabled = false;
             View.AddSubview(leftButton);
@@ -94,6 +104,8 @@ namespace NewsApp
             rightButton.Frame = new RectangleF((float)similarArticles.Frame.Right + 5, (float)similarArticles.Frame.Top, (float)(similarArticles.Frame.Left - 5), (float)similarArticles.Frame.Height);
             rightButton.SetTitle(">", UIControlState.Normal);
             rightButton.Font = UIFont.SystemFontOfSize(14 + (int)(Width / 25));
+            rightButton.SetTitleColor(testColor, UIControlState.Normal);
+            rightButton.SetTitleColor(UIColor.LightGray, UIControlState.Disabled);
             rightButton.HorizontalAlignment = UIControlContentHorizontalAlignment.Left;
             View.AddSubview(rightButton);
 
@@ -105,6 +117,23 @@ namespace NewsApp
             link.Layer.ShadowOffset = new SizeF(3f, 3f);
             link.Layer.MasksToBounds = false;
             View.AddSubview(link);
+
+            shade = new UIView(new RectangleF(Width / 30, (float)bar.Frame.Bottom + Height / 50, Width - Width / 15, (float)(Height * 8 / 9 - bar.Frame.Bottom - Height / 50)));
+            shade.Layer.BackgroundColor = UIColor.FromRGB(240, 240, 240).CGColor;
+            shade.Layer.CornerRadius = 3;
+            View.Add(shade);
+
+            time = new UILabel(new RectangleF((float)shade.Frame.Left + 2, (float)shade.Frame.Bottom, Width, 50));
+            time.Font = UIFont.SystemFontOfSize(6 + (int)(Width / 50));
+            time.TextColor = UIColor.DarkGray;
+            time.Text = "00:00:00 till next refresh_________";
+            time.TranslatesAutoresizingMaskIntoConstraints = true;
+            time.SizeToFit();
+            //time.Frame = new RectangleF((float)shade.Frame.Left + 2, (float)(shade.Frame.Bottom - time.Frame.Height), (float)shade.Frame.Width, (float)time.Frame.Height);
+            View.AddSubview(time);
+
+            UpdateTime();
+            View.SendSubviewToBack(shade);
 
             leftButton.TouchUpInside += (sender, e) => 
             {
@@ -118,15 +147,12 @@ namespace NewsApp
 
             link.TouchDown += (sender, e) =>
             {
-                link.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 60);
+                shade.Layer.BackgroundColor = UIColor.FromRGB(220, 220, 220).CGColor;
             };
 
             link.TouchDragInside += (sender, e) => 
             {
-                if (!clicked[index])
-                {
-                    link.BackgroundColor = UIColor.Clear;
-                }
+                shade.Layer.BackgroundColor = UIColor.FromRGB(240, 240, 240).CGColor;
             };
 
             link.TouchUpInside += (sender, e) => 
@@ -134,6 +160,7 @@ namespace NewsApp
                 var webView = new SFSafariViewController(new NSUrl(articles[index].Url));
                 PresentViewController(webView, true, null);
                 clicked[index] = true;
+                shade.Layer.BackgroundColor = UIColor.FromRGB(240, 240, 240).CGColor;
             };
 
             for (int i = 0; i < articleDisplays.Length; i++)
@@ -157,8 +184,6 @@ namespace NewsApp
 
             articleImage = new UIImageView(new RectangleF(Width / 20, (float)bar.Frame.Bottom + Height / 10, Width - Width / 10, Height / 3));
             articleImage.Image = FromUrl(article.UrlToImage);
-            articleImage.Layer.BorderWidth = 1;
-            articleImage.Layer.BorderColor = UIColor.Gray.CGColor;
             tempView.AddSubview(articleImage);
 
             articleSource = new UILabel(new RectangleF(Width / 20, (float)articleImage.Frame.Top - 70, Width - Width / 10, 70));
@@ -170,8 +195,7 @@ namespace NewsApp
             articleSource.SizeToFit();
             articleSource.Frame = new RectangleF(Width / 20, (float)(articleImage.Frame.Top - articleSource.Frame.Height), Width - Width / 10, (float)articleSource.Frame.Height);
             articleSource.TextColor = UIColor.Black;
-            //articleSource.BackgroundColor = UIColor.Blue; // DEBUG
-            articleSource.BackgroundColor = testColor;
+            articleSource.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 30);
             tempView.AddSubview(articleSource);
 
             articleUrl = new UILabel(new RectangleF(Width / 20, (float)articleImage.Frame.Bottom, Width - Width / 10, Height / 10));
@@ -182,7 +206,7 @@ namespace NewsApp
             articleUrl.SizeToFit();
             articleUrl.Frame = new RectangleF(Width / 20, (float)articleImage.Frame.Bottom, Width - Width / 10, (float)articleUrl.Frame.Height);
             articleUrl.TextColor = UIColor.DarkGray;
-            articleUrl.BackgroundColor = UIColor.LightGray;
+            articleUrl.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 30);
             tempView.AddSubview(articleUrl);
 
             articleTitle = new UILabel(new RectangleF(Width / 20, (float)articleUrl.Frame.Bottom + Height / 30, Width - Width / 10, Height / 4));
@@ -193,7 +217,8 @@ namespace NewsApp
             articleTitle.SizeToFit();
             articleTitle.Frame = new RectangleF(Width / 20, (float)articleUrl.Frame.Bottom + Height / 30, Width - Width / 10, (float)articleTitle.Frame.Height);
             articleTitle.TextColor = UIColor.Black;
-            articleTitle.BackgroundColor = testColor;//UIColor.Gray; // DEBUG
+            articleTitle.Layer.CornerRadius = 3;
+            articleTitle.BackgroundColor = UIColor.Clear;
             tempView.AddSubview(articleTitle);
 
 
@@ -201,7 +226,7 @@ namespace NewsApp
             articleDescription.Text = article.Description;
             articleDescription.Font = UIFont.SystemFontOfSize(10 + (int)(Width / 50));
             articleDescription.TextColor = UIColor.Black;
-            articleDescription.BackgroundColor = UIColor.LightGray; // DEBUG
+            articleDescription.BackgroundColor = UIColor.Clear; 
             articleDescription.Editable = false;
             articleDescription.Selectable = false;
             articleDescription.TextContainer.LineBreakMode = UILineBreakMode.TailTruncation;
@@ -228,7 +253,6 @@ namespace NewsApp
 
         private void HandleSwipe(int newIndex)
         {
-            // currently only recognizes right swipe
             if (newIndex >= articles.Count || newIndex < 0)
             {
                 return;
@@ -252,15 +276,21 @@ namespace NewsApp
                 leftButton.Enabled = false;
             }
 
-            if (clicked[index])
-            {
-                link.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 60);
-            }
-            else
-            {
-                link.BackgroundColor = UIColor.Clear;
-            }
             View.BringSubviewToFront(link);
+        }
+
+        public async void UpdateTime()
+        {
+            int secondsPassed = (int)(needsUpdate - DateTime.Now).TotalSeconds;
+            while (secondsPassed >= 0) 
+            {
+                await Task.Delay(1000);
+                time.Text = TimeSpan.FromSeconds(secondsPassed).ToString(@"hh\:mm\:ss") + " till next refresh";
+                time.SetNeedsDisplay();
+                secondsPassed = (int)(needsUpdate - DateTime.Now).TotalSeconds;
+            }
+            time.Text = "Relaunch app to refresh articles";
+            time.SetNeedsDisplay();
         }
 
         public override void DidReceiveMemoryWarning()
