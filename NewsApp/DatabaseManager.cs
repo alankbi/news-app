@@ -18,7 +18,7 @@ namespace NewsApp
         {
             dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Clusters");
             sourcesDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Sources");
-            FirstTime = !File.Exists(dbPath);
+            FirstTime = !File.Exists(dbPath); // If this is the first time the app has launched
 
             try
             {
@@ -52,6 +52,9 @@ namespace NewsApp
             }
         }
 
+        /**
+         * Returns the three clusters of news articles in an array
+         */
         public Cluster[] GetClusters()
         {
             Cluster[] clusters = new Cluster[3];
@@ -70,11 +73,18 @@ namespace NewsApp
             return clusters;
         }
 
+        /**
+         * Returns a DateTime of the last time the clusters were updated
+         */
         public DateTime LastUpdated()
         {
             return File.GetLastWriteTime(dbPath);
         }
 
+        /**
+         * Updates the list of sources in the database if 14 days have passed 
+         * since the last update and returns the list of sources
+         */
         public List<NewsSource> GetSources()
         {
             if ((DateTime.Now - SourcesLastUpdated()).TotalDays >= 14 || FirstTime)

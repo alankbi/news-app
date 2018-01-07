@@ -20,10 +20,6 @@ namespace NewsApp
 
         partial void DoTestClustering(UIButton sender)
         {
-            // TODO: start work on frontend, later make performance tweaks to clustering
-
-            // Fetching and clustering code moved to AppDelegate FinishedLaunching method
-
             /* DEBUGGING CODE
             foreach (NewsArticle a in articles)
             {

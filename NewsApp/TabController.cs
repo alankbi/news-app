@@ -21,7 +21,7 @@ namespace NewsApp
                 var articles = fetcher.GetArticles();
 
                 var d = new DocumentClusterer(articles);
-                clusters = d.cluster(8);
+                clusters = d.cluster(20);
                 manager.AddNewClusters(clusters);
             }
             else
@@ -29,7 +29,6 @@ namespace NewsApp
                 clusters = manager.GetClusters();
             }
 
-            int secondsRemaining = (int)(8 * 60 * 60 - timePassed * 60 * 60);
             DateTime needsUpdate = manager.LastUpdated().AddHours(8);
 
             tab1 = new ArticleViewController(clusters[0], needsUpdate);

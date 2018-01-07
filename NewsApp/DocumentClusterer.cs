@@ -17,6 +17,11 @@ namespace NewsApp
 
         }
 
+        /**
+         * Returns an array of clusters of size k with clusters sorted by least 
+         * deviation between articles and articles within each cluster sorted 
+         * by greatest similarity to that cluster's centroid
+         */
         public Cluster[] cluster(int k)
         {
             // Possible improvement: limit min/max cluster size
@@ -110,12 +115,14 @@ namespace NewsApp
                 stillChanging = !unchanged;
             }
 
+            // Sort by best clusters and best articles within each cluster
             Array.Sort(clusters, (Cluster x, Cluster y) => x.CompareTo(y, analyzer));
             foreach(Cluster c in clusters)
             {
                 c.Documents.Sort((int x, int y) => analyzer.Compare(x, y, c.Centroid));
             }
 
+            // Map from indexes to the actual NewsArticles and add to clusters
             foreach (Cluster c in clusters)
             {
                 foreach (int index in c.Documents)

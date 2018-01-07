@@ -33,11 +33,8 @@ namespace NewsApp
             docFrequency = new Dictionary<string, int>();
             docTerms = new List<string>();
 
-            // Commented out until I can find good way to initially load in the list of stopwords
-            //var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "stopwords.txt");
-            //var stopWordsAsArray = File.ReadAllLines(path);
-            //stopWords = new HashSet<string>(stopWordsAsArray);
-            stopWords = new HashSet<string>(new string[]{"the", "be", "to", "of", "and", "a"});
+            stopWords = new HashSet<string>(new string[]{"the", "be", "to", "of", "and", 
+                "a", "in", "that", "have", "i", "it", "for", "not", "on", "with", "he"});
 
             foreach (NewsArticle article in articles) 
             {
@@ -153,6 +150,9 @@ namespace NewsApp
             return docTerms.Count;
         }
 
+        /**
+         * Returns the tf-idf array for the article at the given index in the score matrix
+         */
         public double[] GetDocumentTfIdf(int index)
         {
             return scoreMatrix[index];

@@ -11,11 +11,11 @@ namespace NewsApp
 {
     public class ArticleFetcher
     {
-        private static string apiKey = "7f89b3f5d0ee4aa0aada683a0e2757a8";
+        private static string apiKey = File.ReadAllText("config.txt");
 
         private List<NewsSource> newsSources;
 
-        private const int MaxSourcesPerCall = 5;
+        private const int MaxSourcesPerCall = 20;
         private const int NumberOfCalls = 1;
 
         /**
@@ -25,7 +25,7 @@ namespace NewsApp
          */
         public ArticleFetcher(List<NewsSource> sources)
         {
-            newsSources = sources; 
+            newsSources = sources;
         }
 
         /**
@@ -67,7 +67,7 @@ namespace NewsApp
          */
         private List<NewsArticle> FetchArticles(string sources)
         {
-            string url = "https://newsapi.org/v2/top-headlines?sources=" + sources + "&apiKey=" + apiKey;
+            string url = "https://newsapi.org/v2/top-headlines?sources=" + sources;
             string json = ExecuteCall(url);
 
             dynamic response = JObject.Parse(json);
@@ -81,7 +81,7 @@ namespace NewsApp
          */
         public static List<NewsSource> GetListOfSources() 
         {
-			string url = "https://newsapi.org/v2/sources?language=en&apiKey=" + apiKey;
+			string url = "https://newsapi.org/v2/sources?language=en";
 			string json = ExecuteCall(url);
 
 			dynamic response = JObject.Parse(json);
@@ -99,6 +99,7 @@ namespace NewsApp
 			{
                 try
                 {
+                    wc.Headers.Add("x-api-key", apiKey);
                     json = wc.DownloadString(url);
                 }
                 catch (WebException e)

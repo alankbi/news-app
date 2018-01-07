@@ -25,7 +25,6 @@ namespace NewsApp
         private bool[] clicked;
 
         private DateTime needsUpdate;
-        private UILabel loading;
 
         private float Width = (float) UIScreen.MainScreen.Bounds.Width; // 375 iPhone 8
         private float Height = (float)UIScreen.MainScreen.Bounds.Height; // 667
