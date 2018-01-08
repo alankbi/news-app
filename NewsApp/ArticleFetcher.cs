@@ -15,7 +15,7 @@ namespace NewsApp
 
         private List<NewsSource> newsSources;
 
-        private const int MaxSourcesPerCall = 20;
+        private const int MaxSourcesPerCall = 10;
         private const int NumberOfCalls = 1;
 
         /**

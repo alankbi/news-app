@@ -4,7 +4,6 @@ using System.Drawing;
 using CoreGraphics;
 using Foundation;
 using SafariServices;
-using System.Timers;
 using System.Threading.Tasks;
 
 using UIKit;
@@ -128,7 +127,6 @@ namespace NewsApp
             time.Text = "00:00:00 till next refresh_________";
             time.TranslatesAutoresizingMaskIntoConstraints = true;
             time.SizeToFit();
-            //time.Frame = new RectangleF((float)shade.Frame.Left + 2, (float)(shade.Frame.Bottom - time.Frame.Height), (float)shade.Frame.Width, (float)time.Frame.Height);
             View.AddSubview(time);
 
             UpdateTime();
@@ -228,6 +226,7 @@ namespace NewsApp
             articleDescription.BackgroundColor = UIColor.Clear; 
             articleDescription.Editable = false;
             articleDescription.Selectable = false;
+            articleDescription.ScrollEnabled = false;
             articleDescription.TextContainer.LineBreakMode = UILineBreakMode.TailTruncation;
             tempView.AddSubview(articleDescription);
 

@@ -5,9 +5,9 @@ using UIKit;
 
 namespace NewsApp
 {
-    public partial class FirstViewController : UIViewController
+    public partial class DebugCode : UIViewController
     {
-        protected FirstViewController(IntPtr handle) : base(handle)
+        protected DebugCode(IntPtr handle) : base(handle)
         {
             // Note: this .ctor should not contain any initialization logic.
         }
@@ -18,16 +18,22 @@ namespace NewsApp
 
         }
 
-        partial void DoTestClustering(UIButton sender)
+        public void test()
         {
-            /* DEBUGGING CODE
+            // DEBUGGING CODE
+
+            var manager = new DatabaseManager();
+            var fetcher = new ArticleFetcher(manager.GetSources());
+            var articles = fetcher.GetArticles();
+
             foreach (NewsArticle a in articles)
             {
                 Console.WriteLine(a.Title + "\n" + a.Description);
             }
             
-            var testClusters = m.GetClusters();
+            var testClusters = manager.GetClusters();
             Console.WriteLine(testClusters.Length + " CLUSTERS");
+
             int k = 0;
             foreach (Cluster c in testClusters)
             {
@@ -54,7 +60,7 @@ namespace NewsApp
             a2.Title = "the it and secondunique of to";
             var a3 = new NewsArticle();
             a3.Title = "with are on thethirdone in a to of";
-            DocumentClusterer d = new DocumentClusterer(new List<NewsArticle>(new NewsArticle[] { a1, a2, a3 }));*/
+            var d = new DocumentClusterer(new List<NewsArticle>(new NewsArticle[] { a1, a2, a3 }));
         }
 
 

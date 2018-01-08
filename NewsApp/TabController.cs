@@ -21,7 +21,7 @@ namespace NewsApp
                 var articles = fetcher.GetArticles();
 
                 var d = new DocumentClusterer(articles);
-                clusters = d.cluster(20);
+                clusters = d.cluster(12);
                 manager.AddNewClusters(clusters);
             }
             else

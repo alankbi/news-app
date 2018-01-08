@@ -44,10 +44,16 @@ namespace NewsApp
 
             for (int i = 0; i < 3; i++)
             {
+                int j = 0;
                 foreach (var article in clusters[i].Articles)
                 {
-                    DBNewsArticle dbArticle = new DBNewsArticle(article, i);
+                    var dbArticle = new DBNewsArticle(article, i);
                     conn.Insert(dbArticle);
+                    j++;
+                    if (j >= 6)
+                    {
+                        break; // Store max of 6 articles to prevent taking too long to load each time
+                    }
                 }
             }
         }
@@ -57,7 +63,7 @@ namespace NewsApp
          */
         public Cluster[] GetClusters()
         {
-            Cluster[] clusters = new Cluster[3];
+            var clusters = new Cluster[3];
             for (int i = 0; i < 3; i++)
             {
                 clusters[i] = new Cluster();
@@ -65,7 +71,7 @@ namespace NewsApp
 
             var articles = conn.Table<DBNewsArticle>();
 
-            foreach (DBNewsArticle article in articles) 
+            foreach (var article in articles) 
             {
                 clusters[article.ClusterNumber].Articles.Add(new NewsArticle(article));
             }
