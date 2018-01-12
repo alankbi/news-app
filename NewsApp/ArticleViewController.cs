@@ -18,7 +18,8 @@ namespace NewsApp
         private UISwipeGestureRecognizer gestureLeft;
         private UISwipeGestureRecognizer gestureRight;
 
-        private UIColor testColor = UIColor.FromRGB(65, 179, 247);
+        //private UIColor testColor = UIColor.FromRGB(76, 217, 100); // green
+        private UIColor testColor = UIColor.FromRGB(0, 101, 169); // blue
 
         private UIView[] articleDisplays;
         private bool[] clicked;
@@ -76,7 +77,7 @@ namespace NewsApp
             barText.BackgroundColor = UIColor.Clear;
             View.AddSubview(barText);
 
-            similarArticles = new UILabel(new RectangleF(0, Height - Height * 11 / 60, Width, Height * 2 / 15));
+            similarArticles = new UILabel(new RectangleF(0, Height - Height * 1 / 5, Width, Height * 2 / 15));
             similarArticles.Lines = 0;
             similarArticles.Text = "Similar Articles (1/" + articles.Count + ")";
             similarArticles.TextAlignment = UITextAlignment.Center;
@@ -84,7 +85,7 @@ namespace NewsApp
             similarArticles.AdjustsFontForContentSizeCategory = true;
             similarArticles.TranslatesAutoresizingMaskIntoConstraints = true;
             similarArticles.SizeToFit();
-            similarArticles.Frame = new RectangleF((float)(Width / 2 - similarArticles.Frame.Width / 2 - 6), Height - Height * 11 / 60, (float)(similarArticles.Frame.Width + 12), (float)similarArticles.Frame.Height);
+            similarArticles.Frame = new RectangleF((float)(Width / 2 - similarArticles.Frame.Width / 2 - 6), Height - Height * 1 / 5, (float)(similarArticles.Frame.Width + 12), (float)similarArticles.Frame.Height);
             similarArticles.TextColor = testColor;
             View.AddSubview(similarArticles);
 
@@ -116,7 +117,7 @@ namespace NewsApp
             link.Layer.MasksToBounds = false;
             View.AddSubview(link);
 
-            shade = new UIView(new RectangleF(Width / 30, (float)bar.Frame.Bottom + Height / 50, Width - Width / 15, (float)(Height * 8 / 9 - bar.Frame.Bottom - Height / 50)));
+            shade = new UIView(new RectangleF(Width / 30, (float)bar.Frame.Bottom + Height / 50, Width - Width / 15, (float)(Height * 7 / 8 - bar.Frame.Bottom - Height / 50)));
             shade.Layer.BackgroundColor = UIColor.FromRGB(240, 240, 240).CGColor;
             shade.Layer.CornerRadius = 3;
             View.Add(shade);
@@ -154,8 +155,22 @@ namespace NewsApp
 
             link.TouchUpInside += (sender, e) => 
             {
-                var webView = new SFSafariViewController(new NSUrl(articles[index].Url));
-                PresentViewController(webView, true, null);
+                try
+                {
+                    var webView = new SFSafariViewController(new NSUrl(articles[index].Url));
+                    PresentViewController(webView, true, null);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    var alert = new UIAlertView()
+                    {
+                        Title = "Cannot open link",
+                        Message = "The link cannot be opened. "
+                    };
+                    alert.AddButton("OK");
+                    alert.Show();
+                }
                 clicked[index] = true;
                 shade.Layer.BackgroundColor = UIColor.FromRGB(240, 240, 240).CGColor;
             };
@@ -207,9 +222,9 @@ namespace NewsApp
             tempView.AddSubview(articleUrl);
 
             articleTitle = new UILabel(new RectangleF(Width / 20, (float)articleUrl.Frame.Bottom + Height / 30, Width - Width / 10, Height / 4));
-            articleTitle.Lines = 0;
+            articleTitle.Lines = 3;
             articleTitle.Text = article.Title;
-            articleTitle.Font = UIFont.SystemFontOfSize(14 + (int)(Width / 30));
+            articleTitle.Font = UIFont.SystemFontOfSize(13 + (int)(Width / 35));
             articleTitle.TranslatesAutoresizingMaskIntoConstraints = true;
             articleTitle.SizeToFit();
             articleTitle.Frame = new RectangleF(Width / 20, (float)articleUrl.Frame.Bottom + Height / 30, Width - Width / 10, (float)articleTitle.Frame.Height);
